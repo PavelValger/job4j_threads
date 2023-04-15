@@ -11,10 +11,8 @@ public class ConsoleProgress implements Runnable {
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 for (char symbol : process) {
-                    if (!Thread.currentThread().isInterrupted()) {
-                        out.printf("\r load: %s", symbol);
-                        Thread.sleep(500);
-                    }
+                    out.printf("\r load: %s", symbol);
+                    Thread.sleep(500);
                 }
             }
         } catch (InterruptedException e) {
