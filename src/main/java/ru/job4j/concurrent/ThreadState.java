@@ -15,7 +15,7 @@ public class ThreadState {
                 first.getState(), second.getState(), SEPARATOR);
         first.start();
         second.start();
-        while (first.getState() != TERMINATED && second.getState() != TERMINATED) {
+        while (first.getState() != TERMINATED || second.getState() != TERMINATED) {
             System.out.printf("Нить first - %s, Нить second - %s%s",
                     first.getState(), second.getState(), SEPARATOR);
         }
