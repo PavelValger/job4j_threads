@@ -7,7 +7,6 @@ public class ConsoleProgress implements Runnable {
     @Override
     public void run() {
         char[] process = new char[]{'-', '\\', '|', '/'};
-        out.println("Loading ... |.");
         try {
             while (!Thread.currentThread().isInterrupted()) {
                 for (char symbol : process) {
