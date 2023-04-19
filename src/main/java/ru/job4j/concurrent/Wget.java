@@ -57,12 +57,11 @@ public class Wget implements Runnable {
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
                 counterByte += bytesRead;
                 if (counterByte >= speed) {
-                    long stopTimeStamp = System.currentTimeMillis();
-                    counterByte = 0;
-                    long timeSleep = DOWNLOAD_TIME - (stopTimeStamp - startTimeStamp);
+                    long timeSleep = DOWNLOAD_TIME - (System.currentTimeMillis() - startTimeStamp);
                     if (timeSleep > 0) {
                         Thread.sleep(timeSleep);
                     }
+                    counterByte = 0;
                     startTimeStamp = System.currentTimeMillis();
                 }
             }
