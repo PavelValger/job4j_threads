@@ -52,27 +52,24 @@ public class Wget implements Runnable {
             int bytesRead;
             int counterByte = 0;
             long start = System.currentTimeMillis();
+            long startTimeStamp = System.currentTimeMillis();
             while ((bytesRead = in.read(dataBuffer, 0, dataBuffer.length)) != -1) {
-                long startTimeStamp = System.currentTimeMillis();
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
-                counterByte += dataBuffer.length;
+                counterByte += bytesRead;
                 if (counterByte >= speed) {
                     long stopTimeStamp = System.currentTimeMillis();
                     counterByte = 0;
                     long timeSleep = DOWNLOAD_TIME - (stopTimeStamp - startTimeStamp);
                     if (timeSleep > 0) {
-                        try {
-                            Thread.sleep(timeSleep);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException("Program aborted");
-                        }
+                        Thread.sleep(timeSleep);
                     }
+                    startTimeStamp = System.currentTimeMillis();
                 }
             }
             long finish = System.currentTimeMillis();
             System.out.printf("The download time - %s seconds, speed - %s bytes per second, file size - %s bytes.",
                     (finish - start) / 1000, speed, Paths.get(fileName).toFile().length());
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
