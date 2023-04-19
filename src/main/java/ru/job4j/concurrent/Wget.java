@@ -6,18 +6,22 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Paths;
 
 public class Wget implements Runnable {
+    private static final int DOWNLOAD_TIME = 1000;
     private final String url;
     private final int speed;
+    private final String fileName;
 
-    public Wget(String url, int speed) {
+    public Wget(String url, int speed, String fileName) {
         this.url = url;
         this.speed = speed;
+        this.fileName = fileName;
     }
 
     private static int validate(String[] args) {
-        if (args.length != 2) {
+        if (args.length != 3) {
             throw new IllegalArgumentException("Incorrect number of parameters");
         }
         try {
@@ -31,33 +35,43 @@ public class Wget implements Runnable {
         } catch (NumberFormatException nfe) {
             throw new IllegalArgumentException(nfe.getMessage());
         }
+        if (!args[2].matches(".+\\..{3,4}")) {
+            throw new IllegalArgumentException("Incorrect file name input.");
+        }
+        if (Paths.get(args[2]).toFile().exists()) {
+            throw new IllegalArgumentException("File exist");
+        }
         return speed;
     }
 
     @Override
     public void run() {
         try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
-             FileOutputStream fileOutputStream = new FileOutputStream("qwerty.jpeg")) {
+             FileOutputStream fileOutputStream = new FileOutputStream(fileName)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1) {
+            int counterByte = 0;
+            long start = System.currentTimeMillis();
+            while ((bytesRead = in.read(dataBuffer, 0, dataBuffer.length)) != -1) {
                 long startTimeStamp = System.currentTimeMillis();
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                long stopTimeStamp = System.currentTimeMillis();
-                int difference = (int) (stopTimeStamp - startTimeStamp);
-                if (difference < speed) {
-                    try {
-                        Thread.sleep(speed - difference);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("Program aborted");
+                counterByte += dataBuffer.length;
+                if (counterByte >= speed) {
+                    long stopTimeStamp = System.currentTimeMillis();
+                    counterByte = 0;
+                    long timeSleep = DOWNLOAD_TIME - (stopTimeStamp - startTimeStamp);
+                    if (timeSleep > 0) {
+                        try {
+                            Thread.sleep(timeSleep);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException("Program aborted");
+                        }
                     }
                 }
             }
+            long finish = System.currentTimeMillis();
+            System.out.printf("The download time - %s seconds, speed - %s bytes per second, file size - %s bytes.",
+                    (finish - start) / 1000, speed, Paths.get(fileName).toFile().length());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,7 +79,7 @@ public class Wget implements Runnable {
 
     public static void main(String[] args) {
         int speed = validate(args);
-        Thread wget = new Thread(new Wget(args[0], speed));
+        Thread wget = new Thread(new Wget(args[0], speed, args[2]));
         wget.start();
         try {
             wget.join();
