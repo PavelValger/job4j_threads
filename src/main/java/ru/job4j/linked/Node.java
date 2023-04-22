@@ -1,4 +1,4 @@
-package main.java.ru.job4j.linked;
+package ru.job4j.linked;
 
 public final class Node<T> {
     private final Node<T> next;

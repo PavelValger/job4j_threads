@@ -1,4 +1,4 @@
-package main.java.ru.job4j.threads.threadlocal;
+package ru.job4j.threads.threadlocal;
 
 public class SecondThread extends Thread {
 

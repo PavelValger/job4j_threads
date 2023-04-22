@@ -1,4 +1,4 @@
-package main.java.ru.job4j.ref;
+package ru.job4j.ref;
 
 public class User {
     private int id;

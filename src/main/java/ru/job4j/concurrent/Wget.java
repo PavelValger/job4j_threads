@@ -1,4 +1,4 @@
-package main.java.ru.job4j.concurrent;
+package ru.job4j.concurrent;
 
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;

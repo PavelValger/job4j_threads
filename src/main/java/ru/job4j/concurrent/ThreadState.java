@@ -1,4 +1,4 @@
-package main.java.ru.job4j.concurrent;
+package ru.job4j.concurrent;
 
 public class ThreadState {
     private static final Thread.State TERMINATED = Thread.State.TERMINATED;
