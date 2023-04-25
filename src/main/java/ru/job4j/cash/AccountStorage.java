@@ -16,7 +16,7 @@ public class AccountStorage {
     }
 
     public synchronized boolean update(Account account) {
-        return accounts.put(account.id(), account) != null;
+        return accounts.replace(account.id(), account) != null;
     }
 
     public synchronized boolean delete(int id) {
@@ -27,7 +27,7 @@ public class AccountStorage {
         return Optional.ofNullable(accounts.get(id));
     }
 
-    public boolean transfer(int fromId, int toId, int amount) {
+    public synchronized boolean transfer(int fromId, int toId, int amount) {
         Account first = null;
         Optional<Account> optionalFirst = getById(fromId);
         if (optionalFirst.isPresent()) {
