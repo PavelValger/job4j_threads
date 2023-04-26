@@ -28,23 +28,12 @@ public class AccountStorage {
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
-        Account first = null;
         Optional<Account> optionalFirst = getById(fromId);
-        if (optionalFirst.isPresent()) {
-            first = optionalFirst.get();
-        }
-        Account second = null;
         Optional<Account> optionalSecond = getById(toId);
-        if (optionalSecond.isPresent()) {
-            second = optionalSecond.get();
-        }
-        boolean rsl = false;
-        if (first != null && second != null) {
-            rsl = first.amount() - amount >= 0;
-            if (rsl) {
-                update(new Account(first.id(), first.amount() - amount));
-                update(new Account(second.id(), second.amount() + amount));
-            }
+        boolean rsl = optionalFirst.isPresent() && optionalSecond.isPresent() && optionalFirst.get().amount() >= amount;
+        if (rsl) {
+            update(new Account(optionalFirst.get().id(), optionalFirst.get().amount() - amount));
+            update(new Account(optionalSecond.get().id(), optionalSecond.get().amount() + amount));
         }
         return rsl;
     }
