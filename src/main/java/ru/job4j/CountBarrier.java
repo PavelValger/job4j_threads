@@ -1,7 +1,5 @@
 package ru.job4j;
 
-import java.util.function.Consumer;
-
 public class CountBarrier {
     private final int total;
     private int count = 0;
@@ -25,33 +23,24 @@ public class CountBarrier {
         }
     }
 
-    private static void action(Consumer<Integer> consumer) {
-        while (!Thread.currentThread().isInterrupted()) {
-            consumer.accept(0);
-            System.out.printf("%s %s%s", Thread.currentThread().getName(), Thread.currentThread().getState(),
-                    System.lineSeparator());
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
     public static void main(String[] args) throws InterruptedException {
-        CountBarrier barrier = new CountBarrier(3);
+        CountBarrier barrier = new CountBarrier(2);
         Thread master = new Thread(
-                () -> action(integer -> barrier.count()),
+                () -> {
+                    barrier.count();
+                    barrier.count();
+                    System.out.println(Thread.currentThread().getName() + " started");
+                },
                 "Master"
         );
         Thread slave = new Thread(
-                () -> action(integer -> barrier.await()),
+                () -> {
+                    barrier.await();
+                    System.out.println(Thread.currentThread().getName() + " started");
+                },
                 "Slave"
         );
         master.start();
         slave.start();
-        Thread.sleep(10000);
-        master.interrupt();
-        slave.interrupt();
     }
 }
