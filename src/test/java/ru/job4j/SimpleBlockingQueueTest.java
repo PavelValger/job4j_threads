@@ -12,7 +12,7 @@ class SimpleBlockingQueueTest {
     @Test
     void whenBlockSizeEqualToOneAndAddFourElementsThenNotNull() throws InterruptedException {
         int number = 4;
-        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(3);
+        SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(1);
         List<Integer> list = new ArrayList<>();
         Thread producer = new Thread(
                 () -> {
@@ -24,7 +24,7 @@ class SimpleBlockingQueueTest {
         );
         Thread consumer = new Thread(
                 () -> {
-                    while (list.size() != number) {
+                    while (list.size() != number || !Thread.currentThread().isInterrupted()) {
                         list.add(sbq.poll());
                     }
                 },
@@ -33,7 +33,7 @@ class SimpleBlockingQueueTest {
         producer.start();
         consumer.start();
         producer.join();
-        consumer.join();
+        consumer.interrupt();
         assertThat(list).isNotNull()
                 .isEqualTo(List.of(0, 1, 2, 3));
     }
