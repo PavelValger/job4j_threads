@@ -24,7 +24,7 @@ class SimpleBlockingQueueTest {
         );
         Thread consumer = new Thread(
                 () -> {
-                    while (list.size() != number || !Thread.currentThread().isInterrupted()) {
+                    while (list.size() != number) {
                         list.add(sbq.poll());
                     }
                 },
@@ -33,7 +33,7 @@ class SimpleBlockingQueueTest {
         producer.start();
         consumer.start();
         producer.join();
-        consumer.interrupt();
+        consumer.join();
         assertThat(list).isNotNull()
                 .isEqualTo(List.of(0, 1, 2, 3));
     }
