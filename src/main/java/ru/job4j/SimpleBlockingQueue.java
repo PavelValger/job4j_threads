@@ -19,7 +19,7 @@ public class SimpleBlockingQueue<T> {
 
     public synchronized void offer(T value) {
         notify();
-        while (queue.size() > blockSize) {
+        while (queue.size() >= blockSize) {
             try {
                 wait();
             } catch (InterruptedException e) {
