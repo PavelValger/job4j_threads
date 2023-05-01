@@ -2,8 +2,8 @@ package ru.job4j;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -13,7 +13,7 @@ class SimpleBlockingQueueTest {
     void whenBlockSizeEqualToOneAndAddFourElementsThenNotNull() throws InterruptedException {
         int number = 4;
         SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(1);
-        List<Integer> list = new ArrayList<>();
+        CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
         Thread producer = new Thread(
                 () -> {
                     for (int i = 0; i < number; i++) {
@@ -28,9 +28,9 @@ class SimpleBlockingQueueTest {
         );
         Thread consumer = new Thread(
                 () -> {
-                    while (list.size() != number || !Thread.currentThread().isInterrupted()) {
+                    while (!sbq.isEmpty() || !Thread.currentThread().isInterrupted()) {
                         try {
-                            list.add(sbq.poll());
+                            buffer.add(sbq.poll());
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
@@ -42,7 +42,8 @@ class SimpleBlockingQueueTest {
         consumer.start();
         producer.join();
         consumer.interrupt();
-        assertThat(list).isNotNull()
+        consumer.join();
+        assertThat(buffer).isNotNull()
                 .isEqualTo(List.of(0, 1, 2, 3));
     }
 }
