@@ -17,7 +17,11 @@ class SimpleBlockingQueueTest {
         Thread producer = new Thread(
                 () -> {
                     for (int i = 0; i < number; i++) {
-                        sbq.offer(i);
+                        try {
+                            sbq.offer(i);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 },
                 "Producer"
@@ -25,7 +29,11 @@ class SimpleBlockingQueueTest {
         Thread consumer = new Thread(
                 () -> {
                     while (list.size() != number || !Thread.currentThread().isInterrupted()) {
-                        list.add(sbq.poll());
+                        try {
+                            list.add(sbq.poll());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 },
                 "Consumer"
