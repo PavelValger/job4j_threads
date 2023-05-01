@@ -11,12 +11,11 @@ class SimpleBlockingQueueTest {
 
     @Test
     void whenBlockSizeEqualToOneAndAddFourElementsThenNotNull() throws InterruptedException {
-        int number = 4;
         SimpleBlockingQueue<Integer> sbq = new SimpleBlockingQueue<>(1);
         CopyOnWriteArrayList<Integer> buffer = new CopyOnWriteArrayList<>();
         Thread producer = new Thread(
                 () -> {
-                    for (int i = 0; i < number; i++) {
+                    for (int i = 0; i < 4; i++) {
                         try {
                             sbq.offer(i);
                         } catch (InterruptedException e) {
