@@ -33,6 +33,17 @@ class CacheTest {
     }
 
     @Test
+    void whenUpdateCheckName() {
+        Cache cache = new Cache();
+        Base base1 = new Base(1, 100);
+        Base base3 = new Base(1, 100);
+        base1.setName("qwerty");
+        cache.add(base1);
+        cache.update(base3);
+        assertThat(cache.getMemory().get(base1.getId()).getName()).isEqualTo("qwerty");
+    }
+
+    @Test
     void whenDelete() {
         Cache cache = new Cache();
         Base base1 = new Base(1, 100);
