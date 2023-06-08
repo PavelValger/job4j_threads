@@ -7,4 +7,4 @@
 * +79920045094 telegram, whatsapp;
 * pavelwalker@mail.ru.
 
-Создание ветки из IDEA.
+Создание ветки task_504828 из IDEA.
