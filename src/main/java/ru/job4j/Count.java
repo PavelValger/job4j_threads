@@ -12,6 +12,9 @@ public class Count {
         value++;
     }
 
+    /**
+     * @return значение счетчика.
+     */
     public synchronized int get() {
         return value;
     }
