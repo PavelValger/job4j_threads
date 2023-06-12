@@ -11,4 +11,6 @@
 * +79920045094 telegram, whatsapp;
 * pavelwalker@mail.ru.
 
+Создание ветки task_504828 из IDEA.
+
 В проекте производилась работа с ветками git.
